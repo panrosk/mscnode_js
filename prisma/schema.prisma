@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// psql -U myuser -d  
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String      @id @default(uuid())
+  createdAt DateTime    @default(now())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  stamps    Stamp[]  
+}
+
+model Place {
+  id       String  @id @default(uuid())
+  createdAt DateTime @default(now())
+  name     String   //Should be unique but this is just a toy example 
+  address  String
+  stamps   Stamp[] 
+}
+
+
+model Stamp {
+  id        String     @id @default(uuid()) 
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String    
+  place     Place      @relation(fields: [placeId], references: [id])
+  placeId   String    
+  createdAt DateTime   @default(now())
+}
